@@ -1,6 +1,6 @@
 from functools import reduce
 
-with open("./01/test.txt") as f:
+with open("./01/input.txt") as f:
     # part 1
     a = f.read().split()
     even = list(map(int, a[::2]))
