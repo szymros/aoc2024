@@ -28,7 +28,8 @@ with open("./06/input.txt") as f:
 
     # part 1
     positions = []
-    visited = [(x, y, current_dir)]
+    step_x, step_y = directions[current_dir]
+    visited = [(x + step_x, y + step_y, current_dir)]
     while 0 <= x < len(lines[0]) and 0 <= y < len(lines):
         char = lines[y][x]
         if (x, y) not in positions:
@@ -47,9 +48,9 @@ with open("./06/input.txt") as f:
     print(len(positions))
 
     # part 2
-    count = 0
+    # works on test data but doesn't on the actual input :/
     fixes = []
-    for idx in range(len(visited) - 1):
+    for idx in range(len(visited)):
         x, y, direction = visited[idx]
         step_x, step_y = directions[direction]
         next_x, next_y, next_dir = 0, 0, ""
@@ -57,19 +58,19 @@ with open("./06/input.txt") as f:
             next_x, next_y, next_dir = visited[idx + 1]
         else:
             next_x, next_y, next_dir = (
-                0 if step_x < 0 else len(lines[0]),
-                0 if step_y < 0 else len(lines),
+                x if step_x == 0 else 0 if step_x < 0 else len(lines[0]),
+                y if step_y == 0 else 0 if step_y < 0 else len(lines),
                 rotations[direction],
             )
 
         for _ in range(abs(next_x - x) + abs(next_y - y)):
             rotated_step_x, rotated_step_y = directions[next_dir]
-            to_check = []
             test_x, test_y = x, y
             while 0 <= test_x < len(lines[0]) and 0 <= test_y < len(lines):
-                if (test_x, test_y, rotations[next_dir]) in visited:
-                    fixes.append((x, y))
-                test_x, test_y = test_x + rotated_step_x, test_y + rotated_step_y
+                tmp_x, tmp_y = test_x + rotated_step_x, test_y + rotated_step_y
+                if (test_x, test_y, rotations[next_dir]) in visited[1:]:
+                    fixes.append((tmp_x, tmp_y))
+                test_x, test_y = tmp_x, tmp_y
             x, y = x + step_x, y + step_y
 
     print(len(set(fixes)))
